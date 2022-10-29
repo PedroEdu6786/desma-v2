@@ -13,31 +13,42 @@ import {
   useToast,
 } from '@chakra-ui/react'
 import useAuth from '../../hooks/useAuth/useAuth.hook'
-import { ILoginData } from '../../services/auth/interfaces'
+import { IRegisterData } from '../../services/auth/interfaces'
 
-interface ILoginForm {
+interface IRegisterForm {
+  name?: string
   email?: string
   password?: string
 }
-const initialState: ILoginData = {
+const initialState: IRegisterData = {
   email: '',
   password: '',
+  name: '',
 }
 
-const Login = () => {
-  const [loginForm, setLoginForm] = useState<ILoginData>(initialState)
-  const { loginUser } = useAuth()
+const Register = () => {
+  const [registerForm, setRegisterForm] = useState<IRegisterData>(initialState)
+  const { registerUser } = useAuth()
   const toast = useToast()
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const updatedValue: ILoginForm = {}
-    updatedValue[event.target.name as keyof ILoginForm] = event.target.value
-    setLoginForm({ ...loginForm, ...updatedValue })
+    const updatedValue: IRegisterForm = {}
+    updatedValue[event.target.name as keyof IRegisterForm] = event.target.value
+    setRegisterForm({ ...registerForm, ...updatedValue })
+  }
+
+  const isValidSubmit = () => {
+    return (
+      !registerForm.email ||
+      !registerForm.password ||
+      !registerForm.name ||
+      !registerForm.password
+    )
   }
 
   const onSubmit = async (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault()
-    if (!loginForm.email || !loginForm.password) {
+    if (isValidSubmit()) {
       toast({
         title: 'Error!',
         description: 'Missing fields',
@@ -47,7 +58,7 @@ const Login = () => {
         isClosable: true,
       })
     } else {
-      await loginUser(loginForm as ILoginData)
+      await registerUser(registerForm as IRegisterData)
     }
   }
 
@@ -58,6 +69,16 @@ const Login = () => {
           Desma
         </Heading>
         <Stack>
+          <FormControl>
+            <FormLabel>Name</FormLabel>
+            <Input
+              name="name"
+              type="text"
+              placeholder="name"
+              size="md"
+              onChange={handleInputChange}
+            />
+          </FormControl>
           <FormControl>
             <FormLabel>Email</FormLabel>
             <Input
@@ -78,13 +99,26 @@ const Login = () => {
               onChange={handleInputChange}
             />
           </FormControl>
+          <FormControl>
+            <FormLabel>Confirm Password</FormLabel>
+            <Input
+              name="password"
+              type="password"
+              placeholder="password"
+              size="md"
+              onChange={handleInputChange}
+            />
+          </FormControl>
         </Stack>
         <Stack>
           <Button colorScheme="blue" onClick={onSubmit}>
-            Login
+            Register
           </Button>
           <Text fontSize="xs">
-            Need an account? <Link color="blue.500" href='/auth/register'>Register</Link>
+            Already have an account?{' '}
+            <Link color="blue.500" href="/auth/login">
+              Login
+            </Link>
           </Text>
         </Stack>
       </Stack>
@@ -92,4 +126,4 @@ const Login = () => {
   )
 }
 
-export default Login
+export default Register
