@@ -1,7 +1,11 @@
 import { Box, Divider, Flex, Link, Spacer, VStack, Heading } from '@chakra-ui/react';
 import styles from './Layout.module.scss';
 
-const Layout: React.FC = ({ children }) => {
+type LayoutProps = {
+  children: React.ReactNode;
+};
+
+const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <VStack m={8} align="stretch" justify="center">
       <Flex>
