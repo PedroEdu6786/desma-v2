@@ -7,6 +7,7 @@ const Dashboard: NextPage = (props) => {
     <Layout>
       <Grid
         p="12"
+        gap={3}
         gridTemplateAreas={`"header button_add"
                             "counter button_add"
                             "main main"`}
@@ -19,14 +20,32 @@ const Dashboard: NextPage = (props) => {
         <GridItem area="counter">
           <Text color="gray.600">0 Design System Generated</Text>
         </GridItem>
-        <GridItem area="button_add">
+        <GridItem area="button_add" alignSelf="center" justifySelf="end">
           <Link href="/designer">
-            <Button>New Design System</Button>
+            <Button
+              px={8}
+              bgGradient="linear(to-r, #aaffec -64%, #ff4ecd -20%, #0070f3 70.5%)"
+              _hover={{
+                opacity: 0.85,
+              }}
+              textColor="white"
+            >
+              New Design System
+            </Button>
           </Link>
         </GridItem>
-        <GridItem area="main">
+        <GridItem area="main" mt={24} justifySelf="center">
           <Link href="/designer">
-            <Button variant="outline">Add Design System</Button>
+            <Button
+              px={8}
+              bgGradient="linear(to-r, #aaffec -64%, #ff4ecd -20%, #0070f3 70.5%)"
+              _hover={{
+                opacity: 0.85,
+              }}
+              textColor="white"
+            >
+              Add Design System
+            </Button>
           </Link>
         </GridItem>
       </Grid>

@@ -6,6 +6,20 @@ const theme = extendTheme({
     heading: `Ubuntu, 'Open Sans', sans-serif`,
     body: `Ubuntu, 'Raleway', sans-serif`,
   },
+  components: {
+    Link: {
+      baseStyle: {
+        _hover: {
+          textDecoration: 'none',
+        },
+      },
+    },
+    Button: {
+      baseStyle: {
+        borderRadius: '0.75rem',
+      },
+    },
+  },
 });
 
 function MyApp({ Component, pageProps }: AppProps) {
