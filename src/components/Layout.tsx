@@ -6,7 +6,7 @@ const Layout: React.FC = ({ children }) => {
     <VStack m={8} align="stretch" justify="center">
       <Flex>
         <Link href="/dashboard">
-          <Heading as="h2" fontSize="xl" className={styles.yellow_to_red_gradient}>
+          <Heading as="h2" fontSize="2xl" className={styles.yellow_to_red_gradient}>
             Desma
           </Heading>
         </Link>
