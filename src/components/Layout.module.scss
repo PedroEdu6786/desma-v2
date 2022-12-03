@@ -1,0 +1,8 @@
+$yellow: #f5a623;
+$red: #f21361;
+
+.yellow_to_red_gradient {
+    background: linear-gradient(45deg, $yellow -20%, $red 100%);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
