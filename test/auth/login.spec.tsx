@@ -47,6 +47,7 @@ describe('Login module', () => {
     const data = await authService().login(userData);
     expect(data).toBeDefined();
     expect(data).toEqual(mockLoginRes.data);
+    expect(axios.post).toBeCalled();
   });
 
   it('should login a user from view', () => {

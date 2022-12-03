@@ -38,6 +38,7 @@ const build: MockLogin = () => {
     submit: () => queryByText(container, 'Register') || new Element(),
   };
 };
+const userResponse = { user: 'test' };
 
 describe('Register module', () => {
   it('renders view', () => {
@@ -45,17 +46,17 @@ describe('Register module', () => {
   });
 
   it('should register a user', async () => {
-    const mockLoginRes = { data: { user: 'test' } };
+    const mockLoginRes = { data: userResponse };
     (axios.post as jest.Mock).mockResolvedValueOnce(mockLoginRes);
 
-    const userData = { email: 'test@example.com', password: 'test' };
-    const data = await authService().login(userData);
-    expect(data).toBeDefined();
+    const userData = { email: 'test@example.com', password: 'test', name: 'test' };
+    const data = await authService().register(userData);
+    expect(data).toEqual(userResponse);
     expect(data).toEqual(mockLoginRes.data);
   });
 
   it('should register a user from view', () => {
-    const mockLoginRes = { data: { user: 'test' } };
+    const mockLoginRes = { data: userResponse };
     (axios.post as jest.Mock).mockResolvedValueOnce(mockLoginRes);
     const { nameInput, emailInput, passwordInput, confirmPasswordInput, submit } =
       build();
