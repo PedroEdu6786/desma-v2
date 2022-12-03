@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import {
   Box,
   Button,
@@ -11,32 +11,32 @@ import {
   FormControl,
   FormLabel,
   useToast,
-} from '@chakra-ui/react'
-import useAuth from '../../hooks/useAuth/useAuth.hook'
-import { ILoginData } from '../../services/auth/interfaces'
+} from '@chakra-ui/react';
+import useAuth from '../../hooks/useAuth/useAuth.hook';
+import { ILoginData } from '../../services/auth/interfaces';
 
 interface ILoginForm {
-  email?: string
-  password?: string
+  email?: string;
+  password?: string;
 }
 const initialState: ILoginData = {
   email: '',
   password: '',
-}
+};
 
 const Login = () => {
-  const [loginForm, setLoginForm] = useState<ILoginData>(initialState)
-  const { loginUser } = useAuth()
-  const toast = useToast()
+  const [loginForm, setLoginForm] = useState<ILoginData>(initialState);
+  const { loginUser } = useAuth();
+  const toast = useToast();
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const updatedValue: ILoginForm = {}
-    updatedValue[event.target.name as keyof ILoginForm] = event.target.value
-    setLoginForm({ ...loginForm, ...updatedValue })
-  }
+    const updatedValue: ILoginForm = {};
+    updatedValue[event.target.name as keyof ILoginForm] = event.target.value;
+    setLoginForm({ ...loginForm, ...updatedValue });
+  };
 
   const onSubmit = async (event: React.MouseEvent<HTMLElement>) => {
-    event.preventDefault()
+    event.preventDefault();
     if (!loginForm.email || !loginForm.password) {
       toast({
         title: 'Error!',
@@ -45,11 +45,11 @@ const Login = () => {
         duration: 9000,
         position: 'top-right',
         isClosable: true,
-      })
+      });
     } else {
-      await loginUser(loginForm as ILoginData)
+      await loginUser(loginForm as ILoginData);
     }
-  }
+  };
 
   return (
     <Center h="100vh">
@@ -84,12 +84,15 @@ const Login = () => {
             Login
           </Button>
           <Text fontSize="xs">
-            Need an account? <Link color="blue.500" href='/auth/register'>Register</Link>
+            Need an account?{' '}
+            <Link color="blue.500" href="/auth/register">
+              Register
+            </Link>
           </Text>
         </Stack>
       </Stack>
     </Center>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;

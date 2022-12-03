@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import {
   Box,
   Button,
@@ -11,31 +11,31 @@ import {
   FormControl,
   FormLabel,
   useToast,
-} from '@chakra-ui/react'
-import useAuth from '../../hooks/useAuth/useAuth.hook'
-import { IRegisterData } from '../../services/auth/interfaces'
+} from '@chakra-ui/react';
+import useAuth from '../../hooks/useAuth/useAuth.hook';
+import { IRegisterData } from '../../services/auth/interfaces';
 
 interface IRegisterForm {
-  name?: string
-  email?: string
-  password?: string
+  name?: string;
+  email?: string;
+  password?: string;
 }
 const initialState: IRegisterData = {
   email: '',
   password: '',
   name: '',
-}
+};
 
 const Register = () => {
-  const [registerForm, setRegisterForm] = useState<IRegisterData>(initialState)
-  const { registerUser } = useAuth()
-  const toast = useToast()
+  const [registerForm, setRegisterForm] = useState<IRegisterData>(initialState);
+  const { registerUser } = useAuth();
+  const toast = useToast();
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const updatedValue: IRegisterForm = {}
-    updatedValue[event.target.name as keyof IRegisterForm] = event.target.value
-    setRegisterForm({ ...registerForm, ...updatedValue })
-  }
+    const updatedValue: IRegisterForm = {};
+    updatedValue[event.target.name as keyof IRegisterForm] = event.target.value;
+    setRegisterForm({ ...registerForm, ...updatedValue });
+  };
 
   const isValidSubmit = () => {
     return (
@@ -43,11 +43,11 @@ const Register = () => {
       !registerForm.password ||
       !registerForm.name ||
       !registerForm.password
-    )
-  }
+    );
+  };
 
   const onSubmit = async (event: React.MouseEvent<HTMLElement>) => {
-    event.preventDefault()
+    event.preventDefault();
     if (isValidSubmit()) {
       toast({
         title: 'Error!',
@@ -56,11 +56,11 @@ const Register = () => {
         duration: 9000,
         position: 'top-right',
         isClosable: true,
-      })
+      });
     } else {
-      await registerUser(registerForm as IRegisterData)
+      await registerUser(registerForm as IRegisterData);
     }
-  }
+  };
 
   return (
     <Center h="100vh">
@@ -123,7 +123,7 @@ const Register = () => {
         </Stack>
       </Stack>
     </Center>
-  )
-}
+  );
+};
 
-export default Register
+export default Register;
