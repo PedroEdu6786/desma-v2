@@ -1,8 +1,26 @@
-import { Button, Grid, GridItem, Heading, Link, Text } from '@chakra-ui/react';
-import { NextPage } from 'next';
+import { Button, Grid, GridItem, Heading, HStack, Link, Text } from '@chakra-ui/react';
+import { GetServerSideProps, NextPage } from 'next';
+import { DesignSystemOverview } from '../components/DesignSystemOverview';
 import { Layout } from '../components/Layout';
+import { DesignSystem } from '../types/DesignSystem';
 
-const Dashboard: NextPage = (props) => {
+type DashboardProps = {
+  designs: Pick<DesignSystem, '_id' | 'name'>[];
+};
+
+export const getServerSideProps: GetServerSideProps<DashboardProps> = async (context) => {
+  return {
+    props: {
+      designs: [
+        { _id: '1', name: 'My first design system' },
+        { _id: '2', name: 'Some personal project' },
+        { _id: '3', name: 'Loatí Cabs' },
+      ],
+    },
+  };
+};
+
+const Dashboard: NextPage<DashboardProps> = ({ designs }) => {
   return (
     <Layout>
       <Grid
@@ -18,7 +36,7 @@ const Dashboard: NextPage = (props) => {
           </Heading>
         </GridItem>
         <GridItem area="counter">
-          <Text color="gray.600">0 Design System Generated</Text>
+          <Text color="gray.600">{designs.length} Design System Generated</Text>
         </GridItem>
         <GridItem area="button_add" alignSelf="center" justifySelf="end">
           <Link href="/designer">
@@ -34,20 +52,35 @@ const Dashboard: NextPage = (props) => {
             </Button>
           </Link>
         </GridItem>
-        <GridItem area="main" mt={24} justifySelf="center">
-          <Link href="/designer">
-            <Button
-              px={8}
-              bgGradient="linear(to-r, #aaffec -64%, #ff4ecd -20%, #0070f3 70.5%)"
-              _hover={{
-                opacity: 0.85,
-              }}
-              textColor="white"
+        {designs.length > 0 ? (
+          <GridItem area="main">
+            <Grid
+              templateColumns="repeat(auto-fit, 16rem)"
+              gap="16"
+              width="full"
+              marginTop={4}
             >
-              Add Design System
-            </Button>
-          </Link>
-        </GridItem>
+              {designs.map(({ name, _id }) => (
+                <DesignSystemOverview key={_id} name={name} _id={_id} />
+              ))}
+            </Grid>
+          </GridItem>
+        ) : (
+          <GridItem area="main" mt={24} justifySelf="center">
+            <Link href="/designer">
+              <Button
+                px={8}
+                bgGradient="linear(to-r, #aaffec -64%, #ff4ecd -20%, #0070f3 70.5%)"
+                _hover={{
+                  opacity: 0.85,
+                }}
+                textColor="white"
+              >
+                Add Design System
+              </Button>
+            </Link>
+          </GridItem>
+        )}
       </Grid>
     </Layout>
   );
