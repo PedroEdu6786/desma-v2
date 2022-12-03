@@ -7,7 +7,13 @@ type DesignSystemOverviewProps = {
 
 const DesignSystemOverview: React.FC<DesignSystemOverviewProps> = ({ name, _id }) => {
   return (
-    <Card width="full" bg="rgb(22, 19, 22)" borderRadius={7}>
+    <Card
+      width="full"
+      bg="rgb(22, 19, 22)"
+      borderRadius={7}
+      transition="all 250ms ease"
+      _hover={{ opacity: 0.85 }}
+    >
       <Link href={`designer/${_id}`}>
         <Image
           p={4}
