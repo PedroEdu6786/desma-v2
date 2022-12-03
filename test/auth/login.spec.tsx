@@ -39,6 +39,10 @@ describe('Login module', () => {
     expect(build()).toBeDefined();
   });
 
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('should login a user', async () => {
     const mockLoginRes = { data: { user: 'test' } };
     (axios.post as jest.Mock).mockResolvedValueOnce(mockLoginRes);
@@ -61,5 +65,17 @@ describe('Login module', () => {
     fireEvent.click(submit());
 
     expect(axios.post).toBeCalled();
+  });
+
+  it('should not login if missing fields', () => {
+    const mockLoginRes = { data: { user: 'test' } };
+    (axios.post as jest.Mock).mockResolvedValueOnce(mockLoginRes);
+    const { emailInput, submit } = build();
+    const userData = { email: 'test@example.com', password: 'test' };
+
+    fireEvent.change(emailInput(), { target: { value: userData.email } });
+    fireEvent.click(submit());
+
+    expect(axios.post).not.toBeCalled();
   });
 });

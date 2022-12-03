@@ -41,6 +41,10 @@ const build: MockLogin = () => {
 const userResponse = { user: 'test' };
 
 describe('Register module', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('renders view', () => {
     expect(build()).toBeDefined();
   });
@@ -70,5 +74,18 @@ describe('Register module', () => {
     });
     fireEvent.click(submit());
     expect(axios.post).toBeCalled();
+  });
+
+  it('should not register if missing fields', () => {
+    const mockLoginRes = { data: { user: 'test' } };
+    (axios.post as jest.Mock).mockResolvedValueOnce(mockLoginRes);
+    const { nameInput, emailInput, submit } = build();
+    const userData = { email: 'test@example.com', password: 'test' };
+
+    fireEvent.change(nameInput(), { target: { value: userData.email } });
+    fireEvent.change(emailInput(), { target: { value: userData.email } });
+
+    fireEvent.click(submit());
+    expect(axios.post).not.toBeCalled();
   });
 });
