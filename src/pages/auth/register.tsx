@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
+import { useRouter } from 'next/router';
 import {
-  Box,
   Button,
   Center,
   Heading,
@@ -10,10 +10,11 @@ import {
   Link,
   FormControl,
   FormLabel,
-  useToast,
+  Spinner,
 } from '@chakra-ui/react';
 import useAuth from '../../hooks/useAuth.hook';
 import { IRegisterData } from '../../services/auth/interfaces';
+import useToast from '../../hooks/useToast.hook';
 
 interface IRegisterForm {
   name?: string;
@@ -28,8 +29,9 @@ const initialState: IRegisterData = {
 
 const Register = () => {
   const [registerForm, setRegisterForm] = useState<IRegisterData>(initialState);
-  const { registerUser } = useAuth();
-  const toast = useToast();
+  const router = useRouter();
+  const { registerUser, loading } = useAuth();
+  const { callFailToast, callSuccessToast } = useToast();
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const updatedValue: IRegisterForm = {};
@@ -49,16 +51,16 @@ const Register = () => {
   const onSubmit = async (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
     if (isValidSubmit()) {
-      toast({
-        title: 'Error!',
-        description: 'Missing fields',
-        status: 'error',
-        duration: 9000,
-        position: 'top-right',
-        isClosable: true,
-      });
-    } else {
-      await registerUser(registerForm as IRegisterData);
+      return callFailToast('Missing email or password');
+    }
+
+    try {
+      await registerUser(registerForm);
+      callSuccessToast('Account created successfully');
+      router.push('/dashboard');
+    } catch (error) {
+      console.error(error);
+      callFailToast('Could not register user');
     }
   };
 
@@ -111,8 +113,8 @@ const Register = () => {
           </FormControl>
         </Stack>
         <Stack>
-          <Button colorScheme="blue" onClick={onSubmit}>
-            Register
+          <Button colorScheme="blue" onClick={onSubmit} disabled={loading}>
+            {loading ? <Spinner /> : 'Register'}
           </Button>
           <Text fontSize="xs">
             Already have an account?{' '}

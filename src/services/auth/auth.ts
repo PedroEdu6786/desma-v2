@@ -26,7 +26,7 @@ const userLogin = async (userData: ILoginData) => {
   }
 };
 
-const userRegister = async (userData: ILoginData) => {
+const userRegister = async ({ email, password, name }: IRegisterData) => {
   const registerUrl = `${API_URL}${REGISTER_URL}`;
 
   const headers = {
@@ -34,7 +34,8 @@ const userRegister = async (userData: ILoginData) => {
   };
 
   try {
-    const response = await axios.post(registerUrl, { ...userData }, { headers });
+    const payload = { email, password, name };
+    const response = await axios.post(registerUrl, payload, { headers });
     const { data } = await response;
     return data;
   } catch (error) {
