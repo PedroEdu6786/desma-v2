@@ -12,7 +12,7 @@ import {
   FormLabel,
   useToast,
 } from '@chakra-ui/react';
-import useAuth from '../../hooks/useAuth/useAuth.hook';
+import useAuth from '../../hooks/useAuth.hook';
 import { IRegisterData } from '../../services/auth/interfaces';
 
 interface IRegisterForm {

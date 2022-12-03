@@ -10,10 +10,10 @@ import {
   Link,
   FormControl,
   FormLabel,
-  useToast,
 } from '@chakra-ui/react';
-import useAuth from '../../hooks/useAuth/useAuth.hook';
+import useAuth from '../../hooks/useAuth.hook';
 import { ILoginData } from '../../services/auth/interfaces';
+import useToast from '../../hooks/useToast.hook';
 
 interface ILoginForm {
   email?: string;
@@ -27,7 +27,7 @@ const initialState: ILoginData = {
 const Login = () => {
   const [loginForm, setLoginForm] = useState<ILoginData>(initialState);
   const { loginUser } = useAuth();
-  const toast = useToast();
+  const { callFailToast } = useToast();
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const updatedValue: ILoginForm = {};
@@ -38,16 +38,9 @@ const Login = () => {
   const onSubmit = async (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
     if (!loginForm.email || !loginForm.password) {
-      toast({
-        title: 'Error!',
-        description: 'Missing fields',
-        status: 'error',
-        duration: 9000,
-        position: 'top-right',
-        isClosable: true,
-      });
+      callFailToast('Missing email or password');
     } else {
-      await loginUser(loginForm as ILoginData);
+      await loginUser(loginForm);
     }
   };
 
