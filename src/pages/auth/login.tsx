@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import {
   Box,
   Button,
@@ -10,50 +10,46 @@ import {
   Link,
   FormControl,
   FormLabel,
-  Spinner,
-} from '@chakra-ui/react';
-import useAuth from '../../hooks/useAuth.hook';
-import { ILoginData } from '../../services/auth/interfaces';
-import useToast from '../../hooks/useToast.hook';
-import { useRouter } from 'next/router';
+  useToast,
+} from '@chakra-ui/react'
+import useAuth from '../../hooks/useAuth/useAuth.hook'
+import { ILoginData } from '../../services/auth/interfaces'
 
 interface ILoginForm {
-  email?: string;
-  password?: string;
+  email?: string
+  password?: string
 }
 const initialState: ILoginData = {
   email: '',
   password: '',
-};
+}
 
 const Login = () => {
-  const [loginForm, setLoginForm] = useState<ILoginData>(initialState);
-  const router = useRouter();
-  const { loginUser, loading } = useAuth();
-  const { callFailToast, callSuccessToast } = useToast();
+  const [loginForm, setLoginForm] = useState<ILoginData>(initialState)
+  const { loginUser } = useAuth()
+  const toast = useToast()
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const updatedValue: ILoginForm = {};
-    updatedValue[event.target.name as keyof ILoginForm] = event.target.value;
-    setLoginForm({ ...loginForm, ...updatedValue });
-  };
+    const updatedValue: ILoginForm = {}
+    updatedValue[event.target.name as keyof ILoginForm] = event.target.value
+    setLoginForm({ ...loginForm, ...updatedValue })
+  }
 
   const onSubmit = async (event: React.MouseEvent<HTMLElement>) => {
-    event.preventDefault();
+    event.preventDefault()
     if (!loginForm.email || !loginForm.password) {
-      return callFailToast('Missing email or password');
+      toast({
+        title: 'Error!',
+        description: 'Missing fields',
+        status: 'error',
+        duration: 9000,
+        position: 'top-right',
+        isClosable: true,
+      })
+    } else {
+      await loginUser(loginForm as ILoginData)
     }
-
-    try {
-      await loginUser(loginForm);
-
-      callSuccessToast('Account logged in successfully');
-      router.push('/dashboard');
-    } catch (error) {
-      console.error(error);
-      callFailToast('Could not login user');
-    }
-  };
+  }
 
   return (
     <Center h="100vh">
@@ -84,19 +80,16 @@ const Login = () => {
           </FormControl>
         </Stack>
         <Stack>
-          <Button colorScheme="blue" onClick={onSubmit} disabled={loading}>
-            {loading ? <Spinner /> : 'Login'}
+          <Button colorScheme="blue" onClick={onSubmit}>
+            Login
           </Button>
           <Text fontSize="xs">
-            Need an account?{' '}
-            <Link color="blue.500" href="/auth/register">
-              Register
-            </Link>
+            Need an account? <Link color="blue.500" href='/auth/register'>Register</Link>
           </Text>
         </Stack>
       </Stack>
     </Center>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login

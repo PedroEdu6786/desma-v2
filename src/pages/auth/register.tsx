@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
+import React, { useState } from 'react'
 import {
+  Box,
   Button,
   Center,
   Heading,
@@ -10,34 +10,32 @@ import {
   Link,
   FormControl,
   FormLabel,
-  Spinner,
-} from '@chakra-ui/react';
-import useAuth from '../../hooks/useAuth.hook';
-import { IRegisterData } from '../../services/auth/interfaces';
-import useToast from '../../hooks/useToast.hook';
+  useToast,
+} from '@chakra-ui/react'
+import useAuth from '../../hooks/useAuth/useAuth.hook'
+import { IRegisterData } from '../../services/auth/interfaces'
 
 interface IRegisterForm {
-  name?: string;
-  email?: string;
-  password?: string;
+  name?: string
+  email?: string
+  password?: string
 }
 const initialState: IRegisterData = {
   email: '',
   password: '',
   name: '',
-};
+}
 
 const Register = () => {
-  const [registerForm, setRegisterForm] = useState<IRegisterData>(initialState);
-  const router = useRouter();
-  const { registerUser, loading } = useAuth();
-  const { callFailToast, callSuccessToast } = useToast();
+  const [registerForm, setRegisterForm] = useState<IRegisterData>(initialState)
+  const { registerUser } = useAuth()
+  const toast = useToast()
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const updatedValue: IRegisterForm = {};
-    updatedValue[event.target.name as keyof IRegisterForm] = event.target.value;
-    setRegisterForm({ ...registerForm, ...updatedValue });
-  };
+    const updatedValue: IRegisterForm = {}
+    updatedValue[event.target.name as keyof IRegisterForm] = event.target.value
+    setRegisterForm({ ...registerForm, ...updatedValue })
+  }
 
   const isValidSubmit = () => {
     return (
@@ -45,24 +43,24 @@ const Register = () => {
       !registerForm.password ||
       !registerForm.name ||
       !registerForm.password
-    );
-  };
+    )
+  }
 
   const onSubmit = async (event: React.MouseEvent<HTMLElement>) => {
-    event.preventDefault();
+    event.preventDefault()
     if (isValidSubmit()) {
-      return callFailToast('Missing email or password');
+      toast({
+        title: 'Error!',
+        description: 'Missing fields',
+        status: 'error',
+        duration: 9000,
+        position: 'top-right',
+        isClosable: true,
+      })
+    } else {
+      await registerUser(registerForm as IRegisterData)
     }
-
-    try {
-      await registerUser(registerForm);
-      callSuccessToast('Account created successfully');
-      router.push('/dashboard');
-    } catch (error) {
-      console.error(error);
-      callFailToast('Could not register user');
-    }
-  };
+  }
 
   return (
     <Center h="100vh">
@@ -113,8 +111,8 @@ const Register = () => {
           </FormControl>
         </Stack>
         <Stack>
-          <Button colorScheme="blue" onClick={onSubmit} disabled={loading}>
-            {loading ? <Spinner /> : 'Register'}
+          <Button colorScheme="blue" onClick={onSubmit}>
+            Register
           </Button>
           <Text fontSize="xs">
             Already have an account?{' '}
@@ -125,7 +123,7 @@ const Register = () => {
         </Stack>
       </Stack>
     </Center>
-  );
-};
+  )
+}
 
-export default Register;
+export default Register
