@@ -10,10 +10,12 @@ import {
   Link,
   FormControl,
   FormLabel,
+  Spinner,
 } from '@chakra-ui/react';
 import useAuth from '../../hooks/useAuth.hook';
 import { ILoginData } from '../../services/auth/interfaces';
 import useToast from '../../hooks/useToast.hook';
+import { useRouter } from 'next/router';
 
 interface ILoginForm {
   email?: string;
@@ -26,8 +28,9 @@ const initialState: ILoginData = {
 
 const Login = () => {
   const [loginForm, setLoginForm] = useState<ILoginData>(initialState);
-  const { loginUser } = useAuth();
-  const { callFailToast } = useToast();
+  const router = useRouter();
+  const { loginUser, loading } = useAuth();
+  const { callFailToast, callSuccessToast } = useToast();
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const updatedValue: ILoginForm = {};
@@ -38,9 +41,17 @@ const Login = () => {
   const onSubmit = async (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
     if (!loginForm.email || !loginForm.password) {
-      callFailToast('Missing email or password');
-    } else {
+      return callFailToast('Missing email or password');
+    }
+
+    try {
       await loginUser(loginForm);
+
+      callSuccessToast('Account logged in successfully');
+      router.push('/dashboard');
+    } catch (error) {
+      console.error(error);
+      callFailToast('Could not login user');
     }
   };
 
@@ -73,8 +84,8 @@ const Login = () => {
           </FormControl>
         </Stack>
         <Stack>
-          <Button colorScheme="blue" onClick={onSubmit}>
-            Login
+          <Button colorScheme="blue" onClick={onSubmit} disabled={loading}>
+            {loading ? <Spinner /> : 'Login'}
           </Button>
           <Text fontSize="xs">
             Need an account?{' '}

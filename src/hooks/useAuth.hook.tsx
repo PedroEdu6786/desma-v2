@@ -12,8 +12,14 @@ const useAuth = () => {
 
   const loginUser = async (authData: ILoginData) => {
     setLoading(true);
-    const data = await authHandler().login(authData);
-    setLoading(false);
+    try {
+      const { token, ...userData } = await authHandler().login(authData);
+      await userStorage().setUserData({ token, userData });
+    } catch (error) {
+      throw new Error();
+    } finally {
+      setLoading(false);
+    }
   };
 
   const registerUser = async (authData: IRegisterData) => {
