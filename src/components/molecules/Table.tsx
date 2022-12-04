@@ -9,8 +9,8 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 
-interface IFontRow {
-  space: string;
+export interface IFontRow {
+  scale: string;
   pixels: string;
   text: any;
 }
@@ -23,7 +23,7 @@ interface ITable {
 const Table = ({ headings, rows }: ITable) => {
   return (
     <TableContainer>
-      <ChakraTable>
+      <ChakraTable size="lg">
         <Thead>
           <Tr>
             {headings.map((heading, index) => (
