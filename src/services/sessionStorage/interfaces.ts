@@ -7,4 +7,5 @@ export interface IUserStorage {
 
 export type SessionStorageService = () => {
   setUserData: (userData: IUserStorage) => Promise<void>;
+  deleteSession: () => Promise<void>;
 };
