@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { API_URL, LOGIN_URL, REGISTER_URL } from './constants';
-import { AuthService, ILoginData, IRegisterData } from './interfaces';
+import { AuthService, IAuthResponse, ILoginData, IRegisterData } from './interfaces';
 
 export const authService: AuthService = () => {
   return {
@@ -9,7 +9,7 @@ export const authService: AuthService = () => {
   };
 };
 
-const userLogin = async (userData: ILoginData) => {
+const userLogin = async (userData: ILoginData): Promise<IAuthResponse> => {
   const loginUrl = `${API_URL}${LOGIN_URL}`;
 
   const headers = {
@@ -26,7 +26,11 @@ const userLogin = async (userData: ILoginData) => {
   }
 };
 
-const userRegister = async ({ email, password, name }: IRegisterData) => {
+const userRegister = async ({
+  email,
+  password,
+  name,
+}: IRegisterData): Promise<IAuthResponse> => {
   const registerUrl = `${API_URL}${REGISTER_URL}`;
 
   const headers = {

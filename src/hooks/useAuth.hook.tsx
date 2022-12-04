@@ -1,22 +1,31 @@
 import React, { useState } from 'react';
 import { authService } from '../services/auth';
 import { ILoginData, IRegisterData } from '../services/auth/interfaces';
+import { sessionStorageService } from '../services/sessionStorage/sessionStorage';
 import { userAuth } from '../useCases/auth';
+import { sessionStorage } from '../useCases/auth/sessionStorage';
 
 const useAuth = () => {
-  const authHandler = userAuth(authService);
   const [loading, setLoading] = useState(false);
+  const authHandler = userAuth(authService);
+  const userStorage = sessionStorage(sessionStorageService);
 
-  const loginUser = async (userData: ILoginData) => {
+  const loginUser = async (authData: ILoginData) => {
     setLoading(true);
-    const data = await authHandler().login(userData);
+    const data = await authHandler().login(authData);
     setLoading(false);
   };
 
-  const registerUser = async (userData: IRegisterData) => {
+  const registerUser = async (authData: IRegisterData) => {
     setLoading(true);
-    const data = await authHandler().register(userData);
-    setLoading(true);
+    try {
+      const { token, ...userData } = await authHandler().register(authData);
+      await userStorage().setUserData({ token, userData });
+    } catch (error) {
+      throw new Error();
+    } finally {
+      setLoading(true);
+    }
   };
 
   return { loginUser, registerUser, loading };
