@@ -11,7 +11,7 @@ import {
 const NumberInput = (props: NumberInputProps) => {
   return (
     <ChakraNumberInput {...props}>
-      <NumberInputField />
+      <NumberInputField data-testid="number" />
       <NumberInputStepper>
         <NumberIncrementStepper />
         <NumberDecrementStepper />

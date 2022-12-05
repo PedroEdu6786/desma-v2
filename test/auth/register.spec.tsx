@@ -9,8 +9,26 @@ import {
 
 import Register from '../../src/pages/auth/register';
 import { authService } from '../../src/services/auth/auth';
+import { act } from 'react-dom/test-utils';
 
 jest.mock('axios');
+jest.mock('next/router', () => ({
+  useRouter() {
+    return {
+      route: '/',
+      pathname: '',
+      query: '',
+      asPath: '',
+      push: jest.fn(),
+      events: {
+        on: jest.fn(),
+        off: jest.fn(),
+      },
+      beforePopState: jest.fn(() => null),
+      prefetch: jest.fn(() => null),
+    };
+  },
+}));
 
 type MockLogin = () => {
   container: HTMLElement;
@@ -59,9 +77,9 @@ describe('Register module', () => {
     expect(data).toEqual(mockLoginRes.data);
   });
 
-  it('should register a user from view', () => {
+  it('should register a user from view', async () => {
     const mockLoginRes = { data: userResponse };
-    (axios.post as jest.Mock).mockResolvedValueOnce(mockLoginRes);
+    (axios.post as jest.Mock).mockResolvedValue(mockLoginRes);
     const { nameInput, emailInput, passwordInput, confirmPasswordInput, submit } =
       build();
     const userData = { email: 'test@example.com', password: 'test' };
@@ -72,7 +90,10 @@ describe('Register module', () => {
     fireEvent.change(confirmPasswordInput(), {
       target: { value: userData.password },
     });
-    fireEvent.click(submit());
+
+    await act(() => {
+      fireEvent.click(submit());
+    });
     expect(axios.post).toBeCalled();
   });
 
