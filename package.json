@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "test": "jest",
-    "test:coverage": "test --coverage --watchAll"
+    "test:coverage": "jest --coverage --watchAll"
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.0.13",

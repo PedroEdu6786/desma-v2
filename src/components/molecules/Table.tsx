@@ -31,7 +31,7 @@ const Table = ({ headings, rows }: ITable) => {
             ))}
           </Tr>
         </Thead>
-        <Tbody>
+        <Tbody data-testid="table">
           {rows.map((row: any, index) => (
             <Tr key={index}>
               {Object.keys(row).map((key, i) => (

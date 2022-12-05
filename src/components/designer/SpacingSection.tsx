@@ -35,6 +35,7 @@ const SpacingSection: React.FC<SpacingSectionProps> = () => {
         <FormControl>
           <FormLabel>Scale factor</FormLabel>
           <Select
+            data-testid="scale"
             options={SCALE_OPTIONS}
             value={scaleFactor}
             onChange={(e) => setScaleFactor(e.target.value as EScaleFactor)}
