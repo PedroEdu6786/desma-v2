@@ -1,23 +1,22 @@
 import { FormControl, FormLabel, Stack } from '@chakra-ui/react';
-import { useState } from 'react';
-import useScaleRatio, { EScaleFactor } from '../../hooks/useScaleRatio';
+import { SPACING_DEFAULT_BASE_SIZE, useDesignSystem } from '../../hooks/useDesignSystem';
+import { EScaleFactor } from '../../hooks/useScaleRatio';
 import NumberInput from '../molecules/NumberInput';
 import Select from '../molecules/Select';
 import Table from '../molecules/Table';
 import { SCALE_OPTIONS } from './FontsSection';
 
-export type SpacingSectionProps = {};
+export type SpacingSectionProps = ReturnType<typeof useDesignSystem>['spacing'];
 
 const HEADINGS = ['space', 'pixels', 'example'];
 
-const BASE_SIZE = 16;
-const SpacingSection: React.FC<SpacingSectionProps> = () => {
-  const [scaleFactor, setScaleFactor] = useState<EScaleFactor>(EScaleFactor.GOLDEN_RATIO);
-  const [baseSize, setBaseSize] = useState<number>(BASE_SIZE);
-  const { handleSpacingScale } = useScaleRatio();
-
-  const rows = handleSpacingScale(scaleFactor, baseSize);
-
+const SpacingSection: React.FC<SpacingSectionProps> = ({
+  baseSize,
+  setBaseSize,
+  scaleFactor,
+  setScaleFactor,
+  rows,
+}) => {
   return (
     <Stack>
       <Stack direction="row" maxW="500px">
@@ -25,7 +24,7 @@ const SpacingSection: React.FC<SpacingSectionProps> = () => {
           <FormLabel>Base size</FormLabel>
           <NumberInput
             allowMouseWheel
-            defaultValue={BASE_SIZE}
+            defaultValue={SPACING_DEFAULT_BASE_SIZE}
             min={10}
             max={24}
             value={baseSize}

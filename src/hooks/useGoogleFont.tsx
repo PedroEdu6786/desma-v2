@@ -3,12 +3,10 @@ import React, { useEffect, useState } from 'react';
 const GOOGLE_FONTS_URL = 'https://fonts.googleapis.com/css2?family=';
 const WEIGHT_QUERY = ':wght@400;700&display=swap';
 
-const useGoogleFont = (): [
-  string,
-  React.Dispatch<React.SetStateAction<string>>,
-  () => void
-] => {
-  const [font, setFont] = useState('');
+const useGoogleFont = (
+  initialValue: string
+): [string, React.Dispatch<React.SetStateAction<string>>, () => void] => {
+  const [font, setFont] = useState(initialValue);
 
   const submitFont = () => {
     const newFont = font.replace(/\s/g, '+');

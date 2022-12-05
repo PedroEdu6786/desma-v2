@@ -1,24 +1,68 @@
 import { Button, Grid, GridItem, Input } from '@chakra-ui/react';
-import { NextPage } from 'next';
+import { withIronSessionSsr } from 'iron-session/next';
+import { GetServerSideProps, NextPage } from 'next';
 import { useState } from 'react';
-import { ColorGroup } from '../../components/designer/ColorsSection';
 import { DesignerTabs } from '../../components/designer/DesignerTabs';
 import { Layout } from '../../components/Layout';
+import { useDesignSystem } from '../../hooks/useDesignSystem';
+import { serverSidePropsProtected } from '../../lib/protectedRoutes';
+import { sessionOptions } from '../../lib/session';
 
-const INITIAL_COLOR_GROUPS: ColorGroup[] = [
-  'PrimaryColor',
-  'SecondaryColor',
-  'TextColor',
-  'BackgroundColors',
-  'ExtraColors',
-].map((label) => ({ label, colors: [] }));
+export const getServerSideProps: GetServerSideProps = withIronSessionSsr(
+  async (context) => {
+    const user = await serverSidePropsProtected(context);
+
+    if ('redirect' in user) return user;
+    return {
+      props: {},
+    };
+  },
+  sessionOptions
+);
+
+const onSubmitDesignSystem = async (
+  designSystem: ReturnType<typeof useDesignSystem>,
+  name: string
+) => {
+  const url = '/api/createNewDesign';
+  const headers = {
+    'Content-Type': 'application/json',
+  };
+  const [primaryColors, secondaryColors, textColors, backgroundColors, extraColors] =
+    designSystem.colors.colorGroups.map(({ colors }) => colors);
+
+  const response = await fetch(url, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify({
+      name,
+      palette: {
+        primaryColors,
+        secondaryColors,
+        textColors,
+        backgroundColors,
+        extraColors,
+      },
+      spacing: {
+        baseSize: designSystem.spacing.baseSize,
+        scaleFactor: designSystem.spacing.scaleFactor,
+      },
+      fonts: {
+        headingFontName: designSystem.fonts.heading,
+        parragraphFontName: designSystem.fonts.paragraphs,
+        baseSize: designSystem.fonts.baseSize,
+        scaleFactor: designSystem.fonts.scaleFactor,
+      },
+    }),
+  });
+
+  const { data } = await response.json();
+  return data;
+};
 
 const Designer: NextPage = () => {
-  const [colorGroups, setColorGroups] = useState(INITIAL_COLOR_GROUPS);
-  const setColors = (groupIndex: number) => (colors: string[]) => {
-    colorGroups[groupIndex].colors = colors;
-    setColorGroups([...colorGroups]);
-  };
+  const [name, setName] = useState('Untitled Design');
+  const designSystem = useDesignSystem();
 
   return (
     <Layout>
@@ -30,18 +74,26 @@ const Designer: NextPage = () => {
       >
         <GridItem area="name" justifySelf="start">
           <Input
-            defaultValue="Untitled Design"
+            value={name}
+            onChange={(event) => setName(event.target.value)}
             placeholder="Untitled Design System"
             fontSize="xl"
           />
         </GridItem>
 
         <GridItem area="save" justifySelf="end">
-          <Button colorScheme="blue">Save Design</Button>
+          <Button
+            colorScheme="blue"
+            onClick={() => {
+              onSubmitDesignSystem(designSystem, name);
+            }}
+          >
+            Save Design
+          </Button>
         </GridItem>
 
         <GridItem area="tabs">
-          <DesignerTabs {...{ colorGroups, setColors }} />
+          <DesignerTabs {...designSystem} />
         </GridItem>
       </Grid>
     </Layout>
