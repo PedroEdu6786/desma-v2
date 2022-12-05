@@ -12,7 +12,7 @@ import React from 'react';
 export interface IFontRow {
   scale: string;
   pixels: string;
-  text: any;
+  example: any;
 }
 
 interface ITable {

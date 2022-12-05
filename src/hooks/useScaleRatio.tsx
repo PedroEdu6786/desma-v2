@@ -1,4 +1,4 @@
-import { Text } from '@chakra-ui/react';
+import { Progress, Text } from '@chakra-ui/react';
 import React from 'react';
 
 export enum EScaleFactor {
@@ -24,6 +24,28 @@ const useScaleRatio = () => {
     const MAX_SIZE = 60;
     const scales = scaleFactor(scaleType, baseSize, MAX_SIZE);
     return scaleFontRatio(scales, baseSize, text);
+  };
+
+  const handleSpacingScale = (scaleType: EScaleFactor, baseSize: number) => {
+    const scales = scaleFactor(scaleType, baseSize);
+    return scaleSpacingRatio(scales, baseSize);
+  };
+
+  const scaleSpacingRatio = (scales: number[], baseSize: number) => {
+    const spacings = [];
+    const maxValue = remToPx(scales[scales.length - 1], baseSize);
+
+    for (let i = 0; i < scales.length; i++) {
+      let value = remToPx(scales[i], baseSize);
+      value = (value * 100) / maxValue;
+      spacings.push({
+        scale: `${scales[i]}rem`,
+        pixels: `${remToPx(scales[i], baseSize)}px`,
+        example: <Progress color="primary" value={value} css={{ w: maxValue }} />,
+      });
+    }
+
+    return spacings;
   };
 
   const scaleFactor = (scaleType: EScaleFactor, baseSize: number, maxSize = MAX_SIZE) => {
@@ -56,14 +78,14 @@ const useScaleRatio = () => {
       fonts.push({
         scale: `${scales[i]}rem`,
         pixels: `${pixels}px`,
-        text: <Text fontSize={`${pixels}px`}>{text}</Text>,
+        example: <Text fontSize={`${pixels}px`}>{text}</Text>,
       });
     }
 
     return fonts;
   };
 
-  return { handleFontRatio };
+  return { handleFontRatio, handleSpacingScale };
 };
 
 export default useScaleRatio;
