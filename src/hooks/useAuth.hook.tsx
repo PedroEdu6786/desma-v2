@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { authService } from '../services/auth';
 import { ILoginData, IRegisterData } from '../services/auth/interfaces';
@@ -7,6 +8,7 @@ import { sessionStorage } from '../useCases/auth/sessionStorage';
 
 const useAuth = () => {
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
   const authHandler = userAuth(authService);
   const userStorage = sessionStorage(sessionStorageService);
 
@@ -30,11 +32,23 @@ const useAuth = () => {
     } catch (error) {
       throw new Error();
     } finally {
-      setLoading(true);
+      setLoading(false);
     }
   };
 
-  return { loginUser, registerUser, loading };
+  const logoutUser = async () => {
+    setLoading(true);
+    try {
+      await userStorage().deleteSession();
+      router.push('/auth/login');
+    } catch (error) {
+      throw new Error();
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { loginUser, registerUser, logoutUser, loading };
 };
 
 export default useAuth;

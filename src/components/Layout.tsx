@@ -1,4 +1,15 @@
-import { Box, Divider, Flex, Link, Spacer, VStack, Heading } from '@chakra-ui/react';
+import {
+  Box,
+  Divider,
+  Flex,
+  Link,
+  Spacer,
+  VStack,
+  Heading,
+  Button,
+  Spinner,
+} from '@chakra-ui/react';
+import useAuth from '../hooks/useAuth.hook';
 import styles from './Layout.module.scss';
 
 type LayoutProps = {
@@ -6,16 +17,20 @@ type LayoutProps = {
 };
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
+  const { logoutUser, loading } = useAuth();
+
   return (
     <VStack m={8} align="stretch" justify="center">
-      <Flex>
+      <Flex alignItems="center">
         <Link href="/dashboard">
           <Heading as="h2" fontSize="2xl" className={styles.yellow_to_red_gradient}>
             Desma
           </Heading>
         </Link>
         <Spacer />
-        <Box>Avatar</Box>
+        <Button colorScheme="red" onClick={logoutUser}>
+          {loading ? <Spinner /> : 'Logout'}
+        </Button>
       </Flex>
 
       <Divider />
