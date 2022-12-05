@@ -31,3 +31,17 @@ export const createNewFont: CreateNewFont = async (font, token) => {
   const { data } = await response.json();
   return data;
 };
+
+type GetFonts = (fontsId: string, token: string) => Promise<RegisteredFont>;
+
+export const getFonts: GetFonts = async (fontsId, token) => {
+  const url = `${API_URL}/fonts/${fontsId}`;
+  const headers = {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`,
+  };
+
+  const response = await fetch(url, { headers });
+  const { data } = await response.json();
+  return data;
+};

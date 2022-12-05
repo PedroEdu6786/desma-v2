@@ -29,3 +29,17 @@ export const createNewSpacing: CreateNewSpacing = async (spacing, token) => {
   const { data } = await response.json();
   return data;
 };
+
+type GetSpacings = (spacingsId: string, token: string) => Promise<RegisteredSpacing>;
+
+export const getSpacings: GetSpacings = async (spacingsId, token) => {
+  const url = `${API_URL}/spacings/${spacingsId}`;
+  const headers = {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`,
+  };
+
+  const response = await fetch(url, { headers });
+  const { data } = await response.json();
+  return data;
+};

@@ -17,6 +17,7 @@ export type RegisteredPalette = Palette & {
 type CreateNewPalette = (palette: Palette, token: string) => Promise<RegisteredPalette>;
 
 const toHexCode = (hexCode: string) => ({ hexCode });
+const fromHexCode = ({ hexCode }: { hexCode: string }) => hexCode;
 
 export const createNewPalette: CreateNewPalette = async (
   { primaryColors, secondaryColors, textColors, backgroundColors, extraColors },
@@ -41,4 +42,25 @@ export const createNewPalette: CreateNewPalette = async (
 
   const data = await response.json();
   return data;
+};
+
+type GetPalette = (paletteId: string, token: string) => Promise<RegisteredPalette>;
+
+export const getPalette: GetPalette = async (paletteId, token) => {
+  const url = `${API_URL}/palette/${paletteId}`;
+  const headers = {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`,
+  };
+
+  const response = await fetch(url, { headers });
+  const data = await response.json();
+  return {
+    ...data,
+    primaryColors: data.primaryColors.map(fromHexCode),
+    secondaryColors: data.secondaryColors.map(fromHexCode),
+    textColors: data.textColors.map(fromHexCode),
+    backgroundColors: data.backgroundColors.map(fromHexCode),
+    extraColors: data.extraColors.map(fromHexCode),
+  };
 };

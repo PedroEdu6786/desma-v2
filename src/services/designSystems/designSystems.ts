@@ -15,6 +15,20 @@ export const getDesignSystems: GetDesignSystems = async (userId, token) => {
   return data || [];
 };
 
+type GetDesignSystem = (designId: string, token: string) => Promise<DesignSystem>;
+
+export const getDesignSystem: GetDesignSystem = async (designId, token) => {
+  const url = `${API_URL}/design-system/${designId}`;
+  const headers = {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`,
+  };
+
+  const response = await fetch(url, { headers });
+  const { data } = await response.json();
+  return data;
+};
+
 type CreateDesignSystem = (
   designSystem: {
     name: string;
