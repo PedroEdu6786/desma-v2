@@ -2,7 +2,7 @@ import { Button, Grid, GridItem, Heading, HStack, Link, Text } from '@chakra-ui/
 import { GetServerSideProps, NextPage } from 'next';
 import { DesignSystemOverview } from '../components/DesignSystemOverview';
 import { Layout } from '../components/Layout';
-import { DesignSystem } from '../types/DesignSystem';
+import { DesignSystem } from '../dtos/DesignSystem';
 
 type DashboardProps = {
   designs: Pick<DesignSystem, '_id' | 'name'>[];
