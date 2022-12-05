@@ -113,6 +113,19 @@ const onSubmitDesignSystem = async ({ designSystem, name, ...ids }: OnSubmitProp
   return data;
 };
 
+const onDeleteDesign = async (designId: string) => {
+  const url = '/api/deleteDesign';
+  const headers = {
+    'Content-Type': 'application/json',
+  };
+  const response = await fetch(url, {
+    headers,
+    body: JSON.stringify({ designId }),
+    method: 'POST',
+  });
+  return response.json();
+};
+
 const EditDesign: React.FC<EditDesignProps> = ({
   name: initialName,
   paletteId,
@@ -163,6 +176,7 @@ const EditDesign: React.FC<EditDesignProps> = ({
             aria-label={`Delete Design System "${name}"`}
             colorScheme="red"
             icon={<DeleteIcon />}
+            onClick={() => onDeleteDesign(designId)}
           />
         </GridItem>
 

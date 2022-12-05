@@ -70,3 +70,17 @@ export const editDesignSystem = async (name: string, designId: string, token: st
 
   return response.json();
 };
+
+export const deleteDesignSystem = async (designId: string, token: string) => {
+  const url = `${API_URL}/design-system/${designId}`;
+  const headers = {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`,
+  };
+  const response = await fetch(url, {
+    method: 'DELETE',
+    headers,
+  });
+
+  return response.json();
+};
