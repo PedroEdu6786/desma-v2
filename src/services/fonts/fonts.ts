@@ -32,6 +32,21 @@ export const createNewFont: CreateNewFont = async (font, token) => {
   return data;
 };
 
+export const editFont = async (font: Font, fontId: string, token: string) => {
+  const url = `${API_URL}/fonts/${fontId}`;
+  const headers = {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`,
+  };
+  const response = await fetch(url, {
+    method: 'PUT',
+    headers,
+    body: JSON.stringify(font),
+  });
+
+  return response.json();
+};
+
 type GetFonts = (fontsId: string, token: string) => Promise<RegisteredFont>;
 
 export const getFonts: GetFonts = async (fontsId, token) => {

@@ -30,6 +30,21 @@ export const createNewSpacing: CreateNewSpacing = async (spacing, token) => {
   return data;
 };
 
+export const editSpacing = async (spacing: Spacing, spacingId: string, token: string) => {
+  const url = `${API_URL}/spacings/${spacingId}`;
+  const headers = {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`,
+  };
+  const response = await fetch(url, {
+    method: 'PUT',
+    headers,
+    body: JSON.stringify(spacing),
+  });
+
+  return response.json();
+};
+
 type GetSpacings = (spacingsId: string, token: string) => Promise<RegisteredSpacing>;
 
 export const getSpacings: GetSpacings = async (spacingsId, token) => {

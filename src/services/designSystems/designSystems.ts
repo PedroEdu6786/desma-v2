@@ -55,3 +55,18 @@ export const createDesignSystem: CreateDesignSystem = async (designSystem, token
   const data = await response.json();
   return data;
 };
+
+export const editDesignSystem = async (name: string, designId: string, token: string) => {
+  const url = `${API_URL}/design-system/${designId}`;
+  const headers = {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`,
+  };
+  const response = await fetch(url, {
+    method: 'PUT',
+    headers,
+    body: JSON.stringify({ name }),
+  });
+
+  return response.json();
+};

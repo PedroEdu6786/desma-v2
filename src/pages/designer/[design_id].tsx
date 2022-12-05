@@ -18,6 +18,7 @@ type EditDesignProps = {
   name: string;
   colorGroups: ColorGroup[];
   paletteId: string;
+  designId: string;
   spacings: Spacing & { _id: string };
   fonts: Font & { _id: string };
 };
@@ -27,9 +28,11 @@ export const getServerSideProps: GetServerSideProps<EditDesignProps> = withIronS
     const user = await serverSidePropsProtected(context);
 
     if ('redirect' in user) return user;
+
+    const designId = context.query.design_id as string;
     const token = context.req.session.user?.token as string;
     const { paletteId, spacingsId, fontsId, name } = await getDesignSystem(
-      context.query.design_id as string,
+      designId,
       token
     );
 
@@ -47,6 +50,7 @@ export const getServerSideProps: GetServerSideProps<EditDesignProps> = withIronS
       props: {
         name,
         paletteId,
+        designId,
         spacings,
         fonts,
         colorGroups: [
@@ -62,9 +66,57 @@ export const getServerSideProps: GetServerSideProps<EditDesignProps> = withIronS
   sessionOptions
 );
 
+type OnSubmitProps = {
+  designSystem: ReturnType<typeof useDesignSystem>;
+  name: string;
+  designId: string;
+  paletteId: string;
+  spacingId: string;
+  fontsId: string;
+};
+
+const onSubmitDesignSystem = async ({ designSystem, name, ...ids }: OnSubmitProps) => {
+  const url = '/api/editDesign';
+  const headers = {
+    'Content-Type': 'application/json',
+  };
+  const [primaryColors, secondaryColors, textColors, backgroundColors, extraColors] =
+    designSystem.colors.colorGroups.map(({ colors }) => colors);
+
+  const response = await fetch(url, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify({
+      name,
+      ...ids,
+      palette: {
+        primaryColors,
+        secondaryColors,
+        textColors,
+        backgroundColors,
+        extraColors,
+      },
+      spacing: {
+        baseSize: designSystem.spacing.baseSize,
+        scaleFactor: designSystem.spacing.scaleFactor,
+      },
+      fonts: {
+        headingFontName: designSystem.fonts.heading,
+        parragraphFontName: designSystem.fonts.paragraphs,
+        baseSize: designSystem.fonts.baseSize,
+        scaleFactor: designSystem.fonts.scaleFactor,
+      },
+    }),
+  });
+
+  const { data } = await response.json();
+  return data;
+};
+
 const EditDesign: React.FC<EditDesignProps> = ({
   name: initialName,
   paletteId,
+  designId,
   ...props
 }) => {
   const designSystem = useDesignSystem(props);
@@ -89,7 +141,21 @@ const EditDesign: React.FC<EditDesignProps> = ({
         </GridItem>
 
         <GridItem area="update" justifySelf="end">
-          <Button colorScheme="blue">Update Design</Button>
+          <Button
+            colorScheme="blue"
+            onClick={() => {
+              onSubmitDesignSystem({
+                designSystem,
+                name,
+                designId,
+                paletteId,
+                fontsId: props.fonts._id,
+                spacingId: props.spacings._id,
+              });
+            }}
+          >
+            Update Design
+          </Button>
         </GridItem>
 
         <GridItem area="delete">

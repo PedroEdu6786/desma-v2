@@ -44,6 +44,31 @@ export const createNewPalette: CreateNewPalette = async (
   return data;
 };
 
+export const editPalette = async (
+  { primaryColors, secondaryColors, textColors, backgroundColors, extraColors }: Palette,
+  paletteId: string,
+  token: string
+) => {
+  const url = `${API_URL}/palette/${paletteId}`;
+  const headers = {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`,
+  };
+  const response = await fetch(url, {
+    method: 'PUT',
+    headers,
+    body: JSON.stringify({
+      primaryColors: primaryColors.map(toHexCode),
+      secondaryColors: secondaryColors.map(toHexCode),
+      textColors: textColors.map(toHexCode),
+      backgroundColors: backgroundColors.map(toHexCode),
+      extraColors: extraColors.map(toHexCode),
+    }),
+  });
+
+  return response.json();
+};
+
 type GetPalette = (paletteId: string, token: string) => Promise<RegisteredPalette>;
 
 export const getPalette: GetPalette = async (paletteId, token) => {
