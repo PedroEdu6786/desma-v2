@@ -3,6 +3,7 @@ import { Grid, GridItem, Input, Button, IconButton } from '@chakra-ui/react';
 import { GetServerSideProps } from 'next';
 import { DesignerTabs } from '../../components/designer/DesignerTabs';
 import { Layout } from '../../components/Layout';
+import { serverSidePropsProtected } from '../../lib/protectedRoutes';
 
 type EditDesignProps = {
   name: string;
@@ -11,6 +12,9 @@ type EditDesignProps = {
 export const getServerSideProps: GetServerSideProps<EditDesignProps> = async (
   context
 ) => {
+  const user = await serverSidePropsProtected(context);
+
+  if ('redirect' in user) return user;
   return {
     props: {
       name: 'Mi primer proyecto',

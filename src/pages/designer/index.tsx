@@ -1,9 +1,24 @@
 import { Button, Grid, GridItem, Input } from '@chakra-ui/react';
-import { NextPage } from 'next';
+import { withIronSessionSsr } from 'iron-session/next';
+import { GetServerSideProps, NextPage } from 'next';
 import { useState } from 'react';
 import { ColorGroup } from '../../components/designer/ColorsSection';
 import { DesignerTabs } from '../../components/designer/DesignerTabs';
 import { Layout } from '../../components/Layout';
+import { serverSidePropsProtected } from '../../lib/protectedRoutes';
+import { sessionOptions } from '../../lib/session';
+
+export const getServerSideProps: GetServerSideProps = withIronSessionSsr(
+  async (context) => {
+    const user = await serverSidePropsProtected(context);
+
+    if ('redirect' in user) return user;
+    return {
+      props: {},
+    };
+  },
+  sessionOptions
+);
 
 const INITIAL_COLOR_GROUPS: ColorGroup[] = [
   'PrimaryColor',
