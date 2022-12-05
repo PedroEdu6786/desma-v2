@@ -11,16 +11,14 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
-import { useState } from 'react';
-import useGoogleFont from '../../hooks/useGoogleFont';
-import useScaleRatio, { EScaleFactor } from '../../hooks/useScaleRatio';
+import { FONTS_DEFAULT_BASE_SIZE, useDesignSystem } from '../../hooks/useDesignSystem';
+import { EScaleFactor } from '../../hooks/useScaleRatio';
 import NumberInput from '../molecules/NumberInput';
 import Select from '../molecules/Select';
 import Table from '../molecules/Table';
 
-export type FontsSectionProps = {};
+export type FontsSectionProps = ReturnType<typeof useDesignSystem>['fonts'];
 
-const BASE_SIZE = 18;
 const HEADINGS = ['space', 'pixels', 'example'];
 
 export const SCALE_OPTIONS: EScaleFactor[] = [
@@ -31,21 +29,18 @@ export const SCALE_OPTIONS: EScaleFactor[] = [
   EScaleFactor.MAJOR_THIRD,
 ];
 
-const SAMPLE_TEXT = 'Lorem ipsum dolor sit amet';
-const FontsSection: React.FC<FontsSectionProps> = () => {
-  const [scaleFactor, setScaleFactor] = useState<EScaleFactor>(EScaleFactor.GOLDEN_RATIO);
-  const [baseSize, setBaseSize] = useState<number>(BASE_SIZE);
-  const { handleFontRatio } = useScaleRatio();
-  const [heading, setHeading, submitHeading] = useGoogleFont();
-  const [paragraphs, setParagraphs, submitParagraphs] = useGoogleFont();
-
-  const ROWS = handleFontRatio(scaleFactor, baseSize, SAMPLE_TEXT);
-
-  const handleFonts = () => {
-    submitHeading();
-    submitParagraphs();
-  };
-
+const FontsSection: React.FC<FontsSectionProps> = ({
+  heading,
+  setHeading,
+  paragraphs,
+  setParagraphs,
+  handleFonts,
+  baseSize,
+  setBaseSize,
+  scaleFactor,
+  setScaleFactor,
+  rows,
+}) => {
   return (
     <Grid templateRows="100px 75%" templateColumns="repeat(4, 1fr)" gap={5}>
       <GridItem colSpan={2} rowSpan={1}>
@@ -82,7 +77,7 @@ const FontsSection: React.FC<FontsSectionProps> = () => {
             <FormLabel>Base size</FormLabel>
             <NumberInput
               allowMouseWheel
-              defaultValue={BASE_SIZE}
+              defaultValue={FONTS_DEFAULT_BASE_SIZE}
               min={10}
               max={24}
               value={baseSize}
@@ -123,7 +118,7 @@ const FontsSection: React.FC<FontsSectionProps> = () => {
       </GridItem>
       {/*  */}
       <GridItem colSpan={2}>
-        <Table headings={HEADINGS} rows={ROWS} />
+        <Table headings={HEADINGS} rows={rows} />
       </GridItem>
     </Grid>
   );

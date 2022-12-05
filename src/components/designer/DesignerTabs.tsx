@@ -1,16 +1,14 @@
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from '@chakra-ui/react';
-import { ColorsSection, ColorsSectionProps } from './ColorsSection';
-import { FontsSection, FontsSectionProps } from './FontsSection';
-import { Preview, PreviewProps } from './Preview';
-import { SpacingSection, SpacingSectionProps } from './SpacingSection';
+import { useDesignSystem } from '../../hooks/useDesignSystem';
+import { ColorsSection } from './ColorsSection';
+import { FontsSection } from './FontsSection';
+import { Preview } from './Preview';
+import { SpacingSection } from './SpacingSection';
 
-type DesignerTabsProps = ColorsSectionProps &
-  FontsSectionProps &
-  SpacingSectionProps &
-  PreviewProps;
+type DesignerTabsProps = ReturnType<typeof useDesignSystem>;
 
 // This component should not have state, it only groups the sections to avoid code repetition
-const DesignerTabs: React.FC<DesignerTabsProps> = ({ setColors, colorGroups }) => (
+const DesignerTabs: React.FC<DesignerTabsProps> = ({ colors, fonts, spacing }) => (
   <Tabs>
     <TabList>
       <Tab>Colors</Tab>
@@ -21,13 +19,13 @@ const DesignerTabs: React.FC<DesignerTabsProps> = ({ setColors, colorGroups }) =
 
     <TabPanels>
       <TabPanel>
-        <ColorsSection {...{ setColors, colorGroups }} />
+        <ColorsSection {...colors} />
       </TabPanel>
       <TabPanel>
-        <FontsSection />
+        <FontsSection {...fonts} />
       </TabPanel>
       <TabPanel>
-        <SpacingSection />
+        <SpacingSection {...spacing} />
       </TabPanel>
       <TabPanel>
         <Preview />

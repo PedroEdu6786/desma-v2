@@ -1,10 +1,9 @@
 import { Button, Grid, GridItem, Input } from '@chakra-ui/react';
 import { withIronSessionSsr } from 'iron-session/next';
 import { GetServerSideProps, NextPage } from 'next';
-import { useState } from 'react';
-import { ColorGroup } from '../../components/designer/ColorsSection';
 import { DesignerTabs } from '../../components/designer/DesignerTabs';
 import { Layout } from '../../components/Layout';
+import { useDesignSystem } from '../../hooks/useDesignSystem';
 import { serverSidePropsProtected } from '../../lib/protectedRoutes';
 import { sessionOptions } from '../../lib/session';
 
@@ -20,20 +19,8 @@ export const getServerSideProps: GetServerSideProps = withIronSessionSsr(
   sessionOptions
 );
 
-const INITIAL_COLOR_GROUPS: ColorGroup[] = [
-  'PrimaryColor',
-  'SecondaryColor',
-  'TextColor',
-  'BackgroundColors',
-  'ExtraColors',
-].map((label) => ({ label, colors: [] }));
-
 const Designer: NextPage = () => {
-  const [colorGroups, setColorGroups] = useState(INITIAL_COLOR_GROUPS);
-  const setColors = (groupIndex: number) => (colors: string[]) => {
-    colorGroups[groupIndex].colors = colors;
-    setColorGroups([...colorGroups]);
-  };
+  const designSystem = useDesignSystem();
 
   return (
     <Layout>
@@ -56,7 +43,7 @@ const Designer: NextPage = () => {
         </GridItem>
 
         <GridItem area="tabs">
-          <DesignerTabs {...{ colorGroups, setColors }} />
+          <DesignerTabs {...designSystem} />
         </GridItem>
       </Grid>
     </Layout>
