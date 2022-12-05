@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { ChakraProvider } from '@chakra-ui/react';
 import {
+  act,
   fireEvent,
   queryByPlaceholderText,
   queryByText,
@@ -11,7 +12,23 @@ import Login from '../../src/pages/auth/login';
 import { authService } from '../../src/services/auth/auth';
 
 jest.mock('axios');
-
+jest.mock('next/router', () => ({
+  useRouter() {
+    return {
+      route: '/',
+      pathname: '',
+      query: '',
+      asPath: '',
+      push: jest.fn(),
+      events: {
+        on: jest.fn(),
+        off: jest.fn(),
+      },
+      beforePopState: jest.fn(() => null),
+      prefetch: jest.fn(() => null),
+    };
+  },
+}));
 type MockLogin = () => {
   container: HTMLElement;
   emailInput: () => Element;
@@ -54,16 +71,17 @@ describe('Login module', () => {
     expect(axios.post).toBeCalled();
   });
 
-  it('should login a user from view', () => {
+  it('should login a user from view', async () => {
     const mockLoginRes = { data: { user: 'test' } };
-    (axios.post as jest.Mock).mockResolvedValueOnce(mockLoginRes);
+    (axios.post as jest.Mock).mockResolvedValue(mockLoginRes);
     const { emailInput, passwordInput, submit } = build();
     const userData = { email: 'test@example.com', password: 'test' };
 
     fireEvent.change(emailInput(), { target: { value: userData.email } });
     fireEvent.change(passwordInput(), { target: { value: userData.password } });
-    fireEvent.click(submit());
-
+    await act(() => {
+      fireEvent.click(submit());
+    });
     expect(axios.post).toBeCalled();
   });
 
@@ -72,9 +90,11 @@ describe('Login module', () => {
     (axios.post as jest.Mock).mockResolvedValueOnce(mockLoginRes);
     const { emailInput, submit } = build();
     const userData = { email: 'test@example.com', password: 'test' };
-
     fireEvent.change(emailInput(), { target: { value: userData.email } });
-    fireEvent.click(submit());
+
+    act(() => {
+      fireEvent.click(submit());
+    });
 
     expect(axios.post).not.toBeCalled();
   });
