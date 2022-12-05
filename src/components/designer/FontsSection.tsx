@@ -47,7 +47,7 @@ const FontsSection: React.FC<FontsSectionProps> = () => {
   };
 
   return (
-    <Grid templateRows="25% 75%" templateColumns="repeat(4, 1fr)" gap={5}>
+    <Grid templateRows="100px 75%" templateColumns="repeat(4, 1fr)" gap={5}>
       <GridItem colSpan={2} rowSpan={1}>
         <Stack direction="row" alignItems="center">
           <FormControl>
