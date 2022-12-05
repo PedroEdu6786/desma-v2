@@ -10,7 +10,7 @@ type DesignerTabsProps = ColorsSectionProps &
   PreviewProps;
 
 // This component should not have state, it only groups the sections to avoid code repetition
-const DesignerTabs: React.FC<DesignerTabsProps> = () => (
+const DesignerTabs: React.FC<DesignerTabsProps> = ({ setColors, colorGroups }) => (
   <Tabs>
     <TabList>
       <Tab>Colors</Tab>
@@ -21,7 +21,7 @@ const DesignerTabs: React.FC<DesignerTabsProps> = () => (
 
     <TabPanels>
       <TabPanel>
-        <ColorsSection />
+        <ColorsSection {...{ setColors, colorGroups }} />
       </TabPanel>
       <TabPanel>
         <FontsSection />

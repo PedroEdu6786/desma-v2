@@ -5,7 +5,7 @@ import { DesignSystemOverview } from '../components/DesignSystemOverview';
 import { Layout } from '../components/Layout';
 import { serverSidePropsProtected } from '../lib/protectedRoutes';
 import { sessionOptions } from '../lib/session';
-import { DesignSystem } from '../types/DesignSystem';
+import { DesignSystem } from '../dtos/DesignSystem';
 
 type DashboardProps = {
   designs: Pick<DesignSystem, '_id' | 'name'>[];

@@ -1,9 +1,25 @@
 import { Button, Grid, GridItem, Input } from '@chakra-ui/react';
 import { NextPage } from 'next';
+import { useState } from 'react';
+import { ColorGroup } from '../../components/designer/ColorsSection';
 import { DesignerTabs } from '../../components/designer/DesignerTabs';
 import { Layout } from '../../components/Layout';
 
+const INITIAL_COLOR_GROUPS: ColorGroup[] = [
+  'PrimaryColor',
+  'SecondaryColor',
+  'TextColor',
+  'BackgroundColors',
+  'ExtraColors',
+].map((label) => ({ label, colors: [] }));
+
 const Designer: NextPage = () => {
+  const [colorGroups, setColorGroups] = useState(INITIAL_COLOR_GROUPS);
+  const setColors = (groupIndex: number) => (colors: string[]) => {
+    colorGroups[groupIndex].colors = colors;
+    setColorGroups([...colorGroups]);
+  };
+
   return (
     <Layout>
       <Grid
@@ -25,7 +41,7 @@ const Designer: NextPage = () => {
         </GridItem>
 
         <GridItem area="tabs">
-          <DesignerTabs />
+          <DesignerTabs {...{ colorGroups, setColors }} />
         </GridItem>
       </Grid>
     </Layout>
