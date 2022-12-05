@@ -14,3 +14,30 @@ export const getDesignSystems: GetDesignSystems = async (userId, token) => {
   const { data } = await response.json();
   return data || [];
 };
+
+type CreateDesignSystem = (
+  designSystem: {
+    name: string;
+    userId: string;
+    fontsId: string;
+    paletteId: string;
+    spacingsId: string;
+  },
+  token: string
+) => Promise<DesignSystem>;
+
+export const createDesignSystem: CreateDesignSystem = async (designSystem, token) => {
+  const url = `${API_URL}/design-system/`;
+  const headers = {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`,
+  };
+  const response = await fetch(url, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(designSystem),
+  });
+
+  const data = await response.json();
+  return data;
+};
