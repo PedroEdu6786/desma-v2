@@ -1,28 +1,36 @@
 import { DeleteIcon } from '@chakra-ui/icons';
 import { Grid, GridItem, Input, Button, IconButton } from '@chakra-ui/react';
+import { withIronSessionSsr } from 'iron-session/next';
 import { GetServerSideProps } from 'next';
+import { useState } from 'react';
 import { DesignerTabs } from '../../components/designer/DesignerTabs';
 import { Layout } from '../../components/Layout';
+import { useDesignSystem } from '../../hooks/useDesignSystem';
 import { serverSidePropsProtected } from '../../lib/protectedRoutes';
+import { sessionOptions } from '../../lib/session';
 
 type EditDesignProps = {
   name: string;
 };
 
-export const getServerSideProps: GetServerSideProps<EditDesignProps> = async (
-  context
-) => {
-  const user = await serverSidePropsProtected(context);
+export const getServerSideProps: GetServerSideProps<EditDesignProps> = withIronSessionSsr(
+  async (context) => {
+    const user = await serverSidePropsProtected(context);
 
-  if ('redirect' in user) return user;
-  return {
-    props: {
-      name: 'Mi primer proyecto',
-    },
-  };
-};
+    if ('redirect' in user) return user;
+    return {
+      props: {
+        name: 'Mi primer proyecto',
+      },
+    };
+  },
+  sessionOptions
+);
 
-const EditDesign: React.FC<EditDesignProps> = ({ name }) => {
+const EditDesign: React.FC<EditDesignProps> = ({ name: initialName }) => {
+  const designSystem = useDesignSystem();
+  const [name, setName] = useState(initialName);
+
   return (
     <Layout>
       <Grid
@@ -33,7 +41,12 @@ const EditDesign: React.FC<EditDesignProps> = ({ name }) => {
                             "tabs tabs tabs"`}
       >
         <GridItem area="name" justifySelf="start">
-          <Input defaultValue={name} placeholder="Untitled Design System" fontSize="xl" />
+          <Input
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            placeholder="Untitled Design System"
+            fontSize="xl"
+          />
         </GridItem>
 
         <GridItem area="update" justifySelf="end">
@@ -49,7 +62,7 @@ const EditDesign: React.FC<EditDesignProps> = ({ name }) => {
         </GridItem>
 
         <GridItem area="tabs">
-          <DesignerTabs />
+          <DesignerTabs {...designSystem} />
         </GridItem>
       </Grid>
     </Layout>
