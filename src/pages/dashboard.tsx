@@ -1,24 +1,33 @@
 import { Button, Grid, GridItem, Heading, HStack, Link, Text } from '@chakra-ui/react';
+import { withIronSessionSsr } from 'iron-session/next';
 import { GetServerSideProps, NextPage } from 'next';
 import { DesignSystemOverview } from '../components/DesignSystemOverview';
 import { Layout } from '../components/Layout';
+import { serverSidePropsProtected } from '../lib/protectedRoutes';
+import { sessionOptions } from '../lib/session';
 import { DesignSystem } from '../types/DesignSystem';
 
 type DashboardProps = {
   designs: Pick<DesignSystem, '_id' | 'name'>[];
 };
 
-export const getServerSideProps: GetServerSideProps<DashboardProps> = async (context) => {
-  return {
-    props: {
-      designs: [
-        { _id: '1', name: 'My first design system' },
-        { _id: '2', name: 'Some personal project' },
-        { _id: '3', name: 'Loatí Cabs' },
-      ],
-    },
-  };
-};
+export const getServerSideProps: GetServerSideProps<DashboardProps> = withIronSessionSsr(
+  async (context) => {
+    const user = await serverSidePropsProtected(context);
+
+    if ('redirect' in user) return user;
+    return {
+      props: {
+        designs: [
+          { _id: '1', name: 'My first design system' },
+          { _id: '2', name: 'Some personal project' },
+          { _id: '3', name: 'Loatí Cabs' },
+        ],
+      },
+    };
+  },
+  sessionOptions
+);
 
 const Dashboard: NextPage<DashboardProps> = ({ designs }) => {
   return (
