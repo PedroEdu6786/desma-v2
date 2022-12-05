@@ -6,6 +6,7 @@ import { Layout } from '../components/Layout';
 import { serverSidePropsProtected } from '../lib/protectedRoutes';
 import { sessionOptions } from '../lib/session';
 import { DesignSystem } from '../dtos/DesignSystem';
+import { getDesignSystems } from '../services/designSystems/designSystems';
 
 type DashboardProps = {
   designs: Pick<DesignSystem, '_id' | 'name'>[];
@@ -16,14 +17,14 @@ export const getServerSideProps: GetServerSideProps<DashboardProps> = withIronSe
     const user = await serverSidePropsProtected(context);
 
     if ('redirect' in user) return user;
+
+    const userId = context.req.session.user?.userData._id as string;
+    const token = context.req.session.user?.token as string;
+
+    const designs = await getDesignSystems(userId, token);
+
     return {
-      props: {
-        designs: [
-          { _id: '1', name: 'My first design system' },
-          { _id: '2', name: 'Some personal project' },
-          { _id: '3', name: 'Loatí Cabs' },
-        ],
-      },
+      props: { designs },
     };
   },
   sessionOptions
