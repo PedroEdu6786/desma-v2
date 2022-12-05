@@ -57,7 +57,7 @@ const onSubmitDesignSystem = async (
   });
 
   const { data } = await response.json();
-  console.log('Result:', data);
+  return data;
 };
 
 const Designer: NextPage = () => {

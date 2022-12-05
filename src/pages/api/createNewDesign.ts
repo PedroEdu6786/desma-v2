@@ -25,8 +25,6 @@ async function registerRoute(req: NextApiRequest, res: NextApiResponse) {
       createNewPalette(palette, token),
     ]);
 
-    console.log({ registeredFont, registeredSpacing, registeredPalette });
-
     const designSystem = await createDesignSystem(
       {
         name,
@@ -37,8 +35,6 @@ async function registerRoute(req: NextApiRequest, res: NextApiResponse) {
       },
       token
     );
-
-    console.log('Design system:', designSystem);
 
     res.status(200).json(designSystem);
   } catch (error) {
