@@ -28,7 +28,7 @@ const DesignerTabs: React.FC<DesignerTabsProps> = ({ colors, fonts, spacing }) =
         <SpacingSection {...spacing} />
       </TabPanel>
       <TabPanel>
-        <Preview />
+        <Preview colors={colors} fonts={fonts} />
       </TabPanel>
     </TabPanels>
   </Tabs>
